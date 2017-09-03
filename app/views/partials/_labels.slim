@@ -1,0 +1,260 @@
+css:
+  /* http://meyerweb.com/eric/tools/css/reset/
+     v2.0 | 20110126
+     License: none (public domain)
+  */
+
+  html, body, div, span, applet, object, iframe,
+  h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+  a, abbr, acronym, address, big, cite, code,
+  del, dfn, em, img, ins, kbd, q, s, samp,
+  small, strike, strong, sub, sup, tt, var,
+  b, u, i, center,
+  dl, dt, dd, ol, ul, li,
+  fieldset, form, label, legend,
+  table, caption, tbody, tfoot, thead, tr, th, td,
+  article, aside, canvas, details, embed,
+  figure, figcaption, footer, header, hgroup,
+  menu, nav, output, ruby, section, summary,
+  time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+  }
+
+  /* HTML5 display-role reset for older browsers */
+  article, aside, details, figcaption, figure,
+  footer, header, hgroup, menu, nav, section {
+    display: block;
+  }
+
+  body {
+    line-height: 1;
+  }
+
+  ol, ul {
+    list-style: none;
+  }
+
+  blockquote, q {
+    quotes: none;
+  }
+
+  blockquote:before, blockquote:after,
+  q:before, q:after {
+    content: '';
+    content: none;
+  }
+
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  .c29 {
+    height: 29mm;
+    width: 90mm;
+  }
+
+  .c62 {
+    height: 62mm;
+    width: 100mm;
+    border-radius: 2mm;
+    position: relative;
+    border: 1px solid black;
+    box-sizing: border-box;
+    overflow: hidden;
+    font-family: "Roboto", sans-serif;
+  }
+
+  .page-break {
+    display: block;
+    clear: both;
+    page-break-after: always;
+  }
+
+  .forum_user .logo-name {
+    top: 4mm;
+    bottom: 3mm;
+  }
+
+  .forum_user .names-col {
+    padding-top: 2mm;
+  }
+
+  .row {
+    width: 100%;
+    text-align: center;
+    vertical-align: middle;
+    display: inline-table;
+    table-layout: fixed;
+  }
+
+  .col {
+    width: 50%;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+  }
+
+  .logo-name {
+    position: absolute;
+    left: 5mm;
+    width: 90mm;
+    top: 10mm;
+    z-index: 2;
+  }
+
+  .logo-name.row {
+    height: 40mm;
+  }
+
+  .logo {
+    display: inline-block;
+    border-radius: 50%;
+    width: 38mm;
+    height: 38mm;
+    z-index: 2;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .names {
+    font-size: 36px;
+    line-height: 36px;
+    font-weight: bold;
+    word-wrap: break-word;
+  }
+
+  .logo-col {
+    vertical-align: middle;
+    display: table-cell;
+  }
+
+
+  .links {
+    position: absolute;
+    top: 44mm;
+    left: 5mm;
+    width: 90mm;
+    height: 16mm;
+    z-index: 2;
+    text-align: center;
+    table-layout: fixed;
+  }
+
+  .links td {
+    vertical-align: middle;
+    width: 50%;
+    word-wrap: break-word;
+  }
+
+  .links .col {
+    padding-top: 2mm;
+  }
+
+  .links img {
+    display: inline-block;
+    width: 6mm !important;
+    height: 6mm !important;
+    margin-left: 1mm;
+    vertical-align: middle;
+  }
+
+  .links .tag-text {
+    padding-left: 1mm;
+    font-size: 18px;
+    vertical-align: middle;
+  }
+
+  .card {
+    background-position: center;
+    background-size: cover;
+
+  }
+
+  .white-overlay {
+    position: absolute;
+    background-color: white;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 10mm;
+    opacity: 0.7;
+    z-index: 1;
+  }
+
+  .meta {
+    position: absolute;
+    bottom: 3mm;
+    right: 3mm;
+    text-align: right;
+    z-index: 2;
+  }
+
+  .meta span {
+    display: inline-block;
+    vertical-align: middle;
+    padding-right: 2mm;
+  }
+
+  .meta img {
+    height: 9mm;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+
+- @users.each do |user|
+  ruby:
+    default_image = "https://robohash.org/#{user.id}.png?bgset=bg2"
+    forum_user = user.is_a?(ForumUser)
+    css = forum_user ? 'forum_user' : ''
+    show_link = !forum_user || user&.links&.size.to_i <= 1
+
+    bg_style = user.background_url ? "background-image: url(#{user.background_url})" : nil
+
+    font_size = case user.name.split.map(&:size).max
+    when it >= 11
+      'font-size: 32px;'
+    when it == 10
+      'font-size: 34px;'
+    end
+
+
+  div.c62.card.page-break style=bg_style class=css
+    - if bg_style
+      .white-overlay
+    .row.logo-name
+      .col.logo-col
+        div.logo style="background-image: url(#{user.image_url || default_image});"
+      .col.names-col
+        span.names
+          - user.name.split(/\s|-/).each_with_index do |text, index|
+            - if index > 0
+              br
+            span style=font_size(text) = text
+
+    - if user&.links
+      table.links
+        - user&.links&.each_slice(2) do |slice|
+          tr
+            - slice.each do |name, groups|
+              td
+                - groups.each do |tag, _name|
+                  /= wicked_pdf_image_tag(tag)
+                  = image_tag wicked_pdf_asset_base64(tag)
+                span.tag-text = name
+
+            - if slice.size == 1
+              td
+
+    - if show_link
+      .meta
+        span bit.ly/ruby-tag
+        /= wicked_pdf_image_tag('ruby-square')
+        = image_tag wicked_pdf_asset_base64('ruby-square')
+

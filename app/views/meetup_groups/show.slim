@@ -1,0 +1,8 @@
+= @group_id
+
+
+table
+  - @events.each do |event|
+    tr
+      td = event['id']
+      td = link_to event['name'], meetup_event_path(@group_id, event['id'])
