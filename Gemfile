@@ -37,6 +37,7 @@ gem 'slim-rails'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 gem 'excon'
+gem 'its-it'
 gem 'discourse_api'
 gem 'annotate', require: false
 gem 'sucker_punch'
