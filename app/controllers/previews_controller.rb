@@ -1,4 +1,6 @@
 class PreviewsController < ActionController::Base
+  helper_method :users_with_cool_tags
+
   def show
     user = ForumUser.find_by(username: params[:q])
 
@@ -7,5 +9,11 @@ class PreviewsController < ActionController::Base
     end
 
     @users = [user].compact
+  end
+
+  private
+
+  def users_with_cool_tags
+    ForumUser.where.not(meetup_id: nil)
   end
 end

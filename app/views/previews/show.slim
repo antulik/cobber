@@ -1,8 +1,30 @@
+= link_to 'home', root_path
+
 = form_with method: :get do |f|
   = f.text_field :q, value: params[:q]
   = f.submit 'Preview'
+
+br
+br
 
 - if @users.any?
   = render partial: 'partials/labels'
 - else
   p No user found
+  br
+  br
+  p Some cool tags
+
+  ul
+    - users_with_cool_tags.each do |user|
+      li = link_to user.username, root_path(q: user.username)
+
+
+br
+br
+br
+p
+  ' Contribute at
+  = link_to 'https://github.com/antulik/cobber', 'https://github.com/antulik/cobber'
+
+
