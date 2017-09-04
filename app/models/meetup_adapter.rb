@@ -12,7 +12,7 @@ class MeetupAdapter
   end
 
   def rsvps(group_id, event_id)
-    Rails.cache.fetch([:meetup, :rsvp, group_id, event_id], expires_in: 1.hour) do
+    Rails.cache.fetch([:meetup, :rsvp, group_id, event_id], expires_in: 10.minutes) do
       client = MeetupAdapter::Client.new
       client.rsvps(
         url_name: group_id,

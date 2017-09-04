@@ -7,8 +7,24 @@ class DiscourseAdapter
     @client.api_username = ENV['DISCOURSE_USERNAME']
   end
 
+  def list_users
+    return to_enum(__callee__) unless block_given?
+
+    page = 1
+    loop do
+      users = client.get("admin/users/list/active.json?page=#{page}")[:body]
+
+      users.each do |user|
+        yield user
+      end
+
+      page += 1
+      break if users.size < 100
+    end
+  end
+
   def download_short
-    users = client.list_users(:active)
+    users = list_users.to_a
     users.map!(&:with_indifferent_access)
 
     users.each do |user|
@@ -16,6 +32,7 @@ class DiscourseAdapter
 
       downer.username = user['username']
       downer.raw_data_short = user
+      downer.short_updated_at = Time.now
       downer.save!
     end
   end
@@ -28,6 +45,7 @@ class DiscourseAdapter
     user = client.user(forum_user.username)
 
     forum_user.raw_data_full = user
+    forum_user.full_updated_at = Time.now
     forum_user.meetup_id = extract_meetup_id_from_discourse_user(user)
     forum_user.save!
   end

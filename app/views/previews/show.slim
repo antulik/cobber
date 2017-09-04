@@ -1,0 +1,8 @@
+= form_with method: :get do |f|
+  = f.text_field :q, value: params[:q]
+  = f.submit 'Preview'
+
+- if @users.any?
+  = render partial: 'partials/labels'
+- else
+  p No user found

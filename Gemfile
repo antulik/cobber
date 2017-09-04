@@ -37,10 +37,10 @@ gem 'slim-rails'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 gem 'excon'
-gem 'its-it'
 gem 'discourse_api'
 gem 'annotate', require: false
 gem 'sucker_punch'
+gem 'awesome_print'
 
 
 group :development, :test do
@@ -49,6 +49,7 @@ group :development, :test do
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '~> 2.13'
   gem 'selenium-webdriver'
+  gem 'pry-rails'
 end
 
 group :development do

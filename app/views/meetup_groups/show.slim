@@ -5,4 +5,5 @@ table
   - @events.each do |event|
     tr
       td = event['id']
+      td = Time.at event['time'] / 1000
       td = link_to event['name'], meetup_event_path(@group_id, event['id'])

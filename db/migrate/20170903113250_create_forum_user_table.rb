@@ -5,6 +5,8 @@ class CreateForumUserTable < ActiveRecord::Migration[5.1]
       t.string :meetup_id
       t.jsonb "raw_data_short"
       t.jsonb "raw_data_full"
+      t.timestamp :short_updated_at
+      t.timestamp :full_updated_at
       t.timestamps
     end
 

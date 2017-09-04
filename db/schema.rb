@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(version: 20170903113250) do
     t.string "meetup_id"
     t.jsonb "raw_data_short"
     t.jsonb "raw_data_full"
+    t.datetime "short_updated_at"
+    t.datetime "full_updated_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

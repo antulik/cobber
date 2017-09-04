@@ -1,24 +1,7 @@
-# README
+# Cobber
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+G'day cobbers!
 
-Things you may want to cover:
+This app generates labels for ruby events.
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Feel free to contribute, it's been hacked together very quickly.
