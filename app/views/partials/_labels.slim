@@ -70,11 +70,11 @@ css:
     font-family: "Roboto", sans-serif;
   }
 
-  .page-break {
-    display: block;
-    clear: both;
-    page-break-after: always;
-  }
+  /*.page-break {*/
+    /*display: block;*/
+    /*clear: both;*/
+    /*page-break-after: always;*/
+  /*}*/
 
   .forum_user .logo-name {
     top: 4mm;
@@ -173,7 +173,7 @@ css:
   .card {
     background-position: center;
     background-size: cover;
-
+    position: relative;
   }
 
   .white-overlay {
@@ -207,6 +207,34 @@ css:
     vertical-align: middle;
   }
 
+  .domino {
+    position: absolute;
+    bottom: 45mm;
+    right: 13mm;
+    font-size: 30mm;
+    background: white;
+    line-height: 17mm;
+    z-index: 2;
+  }
+
+  .domino-x {
+    position: relative;
+    /* top: -7mm; */
+    /* left: 1px; */
+    /* height: 40mm; */
+    /* width: 40mm; */
+    font-size: 30mm;
+    /* background-color: white; */
+    /* z-index: -1; */
+    /* line-height: 15mm; */
+    /* right: 0; */
+    /* bottom: 0; */
+    padding-left: 24mm;
+    padding-bottom: 39mm;
+
+  }
+
+- dominos = ('1F031'.to_i(16)..'1F061'.to_i(16)).to_a.shuffle.cycle
 
 - @users.each do |user|
   ruby:
@@ -217,15 +245,18 @@ css:
 
     bg_style = user.background_url ? "background-image: url(#{user.background_url})" : nil
 
-    font_size = case user.name.split.map(&:size).max
+    name_chunks = user.name.split(/\s|-/).first(3)
+    font_size = case name_chunks.map(&:size).max.to_i
     when it >= 11
       'font-size: 32px;'
     when it == 10
-      'font-size: 34px;'
+      'font-size: 28px;'
     end
 
-
-  div.c62.card.page-break style=bg_style class=css
+  .c62.card style=bg_style class=css
+    / .domino
+      .domino-x
+      == "&#x#{dominos.next.to_s(16)}"
     - if bg_style
       .white-overlay
     .row.logo-name
@@ -233,7 +264,7 @@ css:
         div.logo style="background-image: url(#{user.image_url || default_image});"
       .col.names-col
         span.names
-          - user.name.split(/\s|-/).each_with_index do |text, index|
+          - name_chunks.each_with_index do |text, index|
             - if index > 0
               br
             span style=font_size(text) = text
@@ -257,4 +288,4 @@ css:
         span bit.ly/ruby-tag
         /= wicked_pdf_image_tag('ruby-square')
         = image_tag wicked_pdf_asset_base64('ruby-square')
-
+  p style="page-break-after: always;"

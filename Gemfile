@@ -42,6 +42,8 @@ gem 'discourse_api'
 gem 'annotate', require: false
 gem 'sucker_punch'
 gem 'awesome_print'
+gem 'redis-objects'
+gem 'connection_pool'
 
 
 group :development, :test do

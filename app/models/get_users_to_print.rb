@@ -1,9 +1,10 @@
 class GetUsersToPrint
-  attr_reader :event_id, :group_id
+  attr_reader :event_id, :group_id, :blanks_count
 
-  def initialize(group_id, event_id)
+  def initialize(group_id, event_id, blanks_count: 40)
     @group_id = group_id
     @event_id = event_id
+    @blanks_count = blanks_count
   end
 
   def users
@@ -18,15 +19,23 @@ class GetUsersToPrint
       users_hash[meetup_user.id.to_s] || meetup_user
     end
 
-    users
+    blanks = blanks_count.times.map do
+      OpenStruct.new(
+        id: rand(100_000_000),
+        name: ''
+      )
+    end
+
+    users + blanks
   end
 
   def pdf
+    str = ApplicationController.render(
+      'partials/pdfs', layout: nil,
+      assigns: { users: users },
+    )
     WickedPdf.new.pdf_from_string(
-      ApplicationController.render(
-        'partials/_labels',
-        assigns: { users: users },
-      ),
+      str,
       page_height: 62, page_width: 100,
       margin: { top: 0,
         bottom: 0,

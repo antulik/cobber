@@ -1,7 +1,14 @@
 = @group_id
 
-= @event.inspect
+table
+  - @event.each do |key, value|
+    tr
+      td = key
+      td = value
 
-= link_to 'PDF', format: :pdf
+= button_to 'Download PDF (may timeout)', format: :pdf, method: :get
+
+= button_to 'Generate PDF (no blanks)', generated_document_path(group_id: @group_id, event_id: @event_id)
+= button_to 'Generate PDF (40 blanks)', generated_document_path(group_id: @group_id, event_id: @event_id, blanks_count: 40)
 
 = render partial: 'partials/labels'

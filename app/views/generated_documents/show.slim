@@ -1,0 +1,25 @@
+h2 = @group_id
+
+= link_to 'Back to event', meetup_event_path(group_id: params[:group_id], event_id: params[:event_id])
+
+table
+  tr
+    td Created at
+    td = @doc.created_at.value
+  tr
+    td Generated at
+    td = @doc.generated_at.value
+  tr
+    td Message
+    td = @doc.message.value
+
+- if @exists
+  = link_to 'Download PDF', format: :pdf
+
+- else
+  h2 Generating document. This might take few minutes. Please wait...
+
+  javascript:
+    window.setTimeout(function() {
+      window.location.reload(true);
+    }, 5000);
