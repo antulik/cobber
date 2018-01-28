@@ -12,7 +12,7 @@ class MeetupEventsController < ActionController::Base
         send_data pds, filename: 'labels.pdf'
       }
       format.html {
-        @users = GetUsersToPrint.new(@group_id, @event_id).users
+        # @users = GetUsersToPrint.new(@group_id, @event_id).users
         render :show
       }
     end
