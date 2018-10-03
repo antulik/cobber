@@ -2,11 +2,11 @@ module ApplicationHelper
   def font_size(text)
     case text.size
     when it >= 13
-      'font-size: 25px;'
+      'font-size: 20px;'
     when it >= 11
-      'font-size: 30px;'
+      'font-size: 25px;'
     when it >= 10
-      'font-size: 31px;'
+      'font-size: 25px;'
     when it >= 9
       'font-size: 31px;'
     when it >= 8
