@@ -22,34 +22,71 @@ class MeetupAdapter
   end
 
   class Client
-    attr_reader :session
-    attr_reader :key
+    attr_reader :token, :redirect_uri
 
-    def initialize
-      @key = ENV['MEETUP_KEY']
-      @session = Excon.new('https://api.meetup.com/')
+    def initialize(redirect_uri: 'http://localhost:3000/oauth2/callback')
+      token_record = MeetupAccessToken.last
+      @token = OAuth2::AccessToken.from_hash(oauth_client, token_record.data) if token_record
+      @redirect_uri = redirect_uri
+    end
+
+    def auth_url
+      oauth_client.auth_code.authorize_url(
+        redirect_uri: redirect_uri,
+        scope: 'ageless basic'
+      )
+    end
+
+    def token_from_code(code)
+      @token = oauth_client.auth_code.get_token(code, redirect_uri: redirect_uri)
+      persist_token!
     end
 
     def rsvps(url_name:, event_id:, params: {})
-      parse session.get(
-        path: "/#{url_name}/events/#{event_id}/rsvps",
-        query: with_key(params)
+      get "/#{url_name}/events/#{event_id}/rsvps", params
+    end
+
+    # events 'Ruby-On-Rails-Oceania-Melbourne'
+    def events(url_name, params = {})
+      get "/#{url_name}/events", params
+    end
+
+    private
+
+    def get(path, params = {})
+      refresh_token! if token.expired?
+
+      token.get('https://api.meetup.com/' + path, params: params).parsed
+    end
+
+    def post(path, params = {})
+      refresh_token! if token.expired?
+
+      token.post('https://api.meetup.com/' + path, params: params).parsed
+    end
+
+    def oauth_client
+      @oauth_client ||= OAuth2::Client.new(ENV['MEETUP_CLIENT_ID'], ENV['MEETUP_SECRET'],
+        site: 'https://secure.meetup.com/',
+        authorize_url: '/oauth2/authorize',
+        token_url: '/oauth2/access',
       )
     end
 
-    def events(url_name)
-      parse session.get(
-        path: "/#{url_name}/events",
-        query: with_key
-      )
+    def refresh_token!
+      @token = token.refresh!
+      persist_token!
     end
 
-    def parse(value)
-      JSON.parse value.body
-    end
+    def persist_token!
+      local_token = token
 
-    def with_key(params = {})
-      params.merge(key: key)
+      Thread.new do
+        MeetupAccessToken.all.last&.destroy!
+        MeetupAccessToken.create! data: local_token.to_hash
+      end.join
+
+      nil
     end
   end
 end
