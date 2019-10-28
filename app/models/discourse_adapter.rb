@@ -12,7 +12,9 @@ class DiscourseAdapter
 
     page = 1
     loop do
-      users = client.get("admin/users/list/active.json?page=#{page}")[:body]
+      users = with_wait do
+        client.get("admin/users/list/active.json?page=#{page}")[:body]
+      end
 
       users.each do |user|
         yield user
@@ -42,7 +44,9 @@ class DiscourseAdapter
   end
 
   def download_full_user(forum_user)
-    user = client.user(forum_user.username)
+    user = with_wait do
+      client.user(forum_user.username)
+    end
 
     forum_user.raw_data_full = user
     forum_user.full_updated_at = Time.now
@@ -56,5 +60,15 @@ class DiscourseAdapter
 
   def extract_meetup_id_from_discourse_user(user)
     user['user_fields']['3'].to_s.scan(/\d{5,}/).first
+  end
+
+  def with_wait
+    yield
+  rescue DiscourseApi::TooManyRequests => e
+    seconds = eval(e.message)['extras']['wait_seconds'] + 1
+    puts "Too many requests, sleeping #{seconds} seconds ..."
+
+    sleep seconds
+    retry
   end
 end
