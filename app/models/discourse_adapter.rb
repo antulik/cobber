@@ -48,6 +48,8 @@ class DiscourseAdapter
     forum_user.full_updated_at = Time.now
     forum_user.meetup_id = extract_meetup_id_from_discourse_user(user)
     forum_user.save!
+  rescue DiscourseApi::NotFoundError
+    forum_user.destroy!
   end
 
   private
